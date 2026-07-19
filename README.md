@@ -1,40 +1,78 @@
-# Deeproject GitHub Pages user-study prototype
+# Deeproject
 
-This package is the frontend-only research version. It runs on GitHub Pages without Python, FastAPI, MongoDB, or another server.
+Deeproject is a behavioral assurance platform for improving human-facing AI systems.
 
-This revision supports a formative CHI-oriented workflow study and an AAAI-oriented transparent Auto-RHCA technology probe. It adds multi-criterion framework building, rule-based proposals with accept/edit/reject decisions, long-horizon onset/recovery visualization, and an illustrative governance/IRR view. It does not claim trained-model accuracy or true multi-rater IRR without independent annotations.
+Many evaluation tools focus on individual responses, aggregate scores, or system traces. Deeproject focuses on what happens across an interaction: when an AI system begins to lose the user's goal or constraints, whether the problem continues, and whether later responses recover successfully.
 
-## What it records
+## Why Deeproject
 
-- Required Participant ID or email onboarding
-- Role and domain profile
-- Scenario turn and evidence selections
-- RHCA ratings and failure tags
-- Failure onset and recovery
-- Domain framework artifact
-- Structured interaction events
+Deeproject helps teams:
 
-Records stay in the participant's browser through `localStorage`. At the end of the session, click **Export study record** and collect the downloaded JSON using the method approved by the study protocol.
+- discover multi-turn behavioral problems earlier;
+- connect evaluation decisions to specific interaction evidence;
+- identify where a problem begins and how it changes over time;
+- move more quickly from evaluation to targeted improvement;
+- turn validated failures into reusable evaluation and training artifacts;
+- improve the quality of AI development and testing.
+
+The intended workflow is:
+
+```text
+Interaction
+→ behavioral evaluation
+→ human validation
+→ targeted improvement
+→ reusable data artifact
+```
+
+## User-study prototype
+
+This repository contains a frontend-only prototype for workflow testing and product research.
+
+The prototype includes:
+
+- multi-turn scenario review;
+- user-selected evaluation and evidence turns;
+- behavioral ratings and failure tags;
+- domain-framework customization;
+- long-horizon trajectory visualization;
+- human review and comparison workflows;
+- governance and disagreement review;
+- structured study export.
+
+Study records remain in the participant's browser until they export the study record. This prototype is intended for research and demonstration, not production deployment.
+
+## Run locally
+
+From the project directory:
+
+```bash
+python3 -m http.server 8003
+```
+
+Then open:
+
+```text
+http://localhost:8003
+```
+
+Use a different port if `8003` is already in use.
 
 ## Publish with GitHub Pages
 
-1. Create a GitHub repository.
-2. Put all files from this folder at the repository root.
-3. Push the files to the `main` branch.
-4. Open **Settings > Pages**.
-5. Under **Build and deployment**, choose **GitHub Actions**.
-6. The included workflow publishes the static site.
+1. Place the project files in a GitHub repository.
+2. Push the files to the `main` branch.
+3. Open **Settings → Pages**.
+4. Select **Deploy from a branch**.
+5. Choose `main` and `/(root)`.
+6. Save the configuration.
 
-The site will normally appear at `https://USERNAME.github.io/REPOSITORY/`.
+The published site will normally appear at:
 
-## Local test
-
-```bash
-python3 -m http.server 8000
+```text
+https://USERNAME.github.io/REPOSITORY/
 ```
 
-Open <http://localhost:8000>.
+## Status
 
-## Important limitation
-
-There is no centralized database or live researcher monitoring in this version. A participant must export the study JSON before finishing. This version is intended for synchronous formative testing, think-aloud sessions, and artifact collection.
+Deeproject is under active development. The current prototype is being used to evaluate the workflow before production infrastructure and integrations are added.
