@@ -1,0 +1,152 @@
+import { APP_CONFIG } from "./config.js";
+import { getState, hydrate, studyBundle } from "./state.js";
+
+const STORAGE_KEY = "deeproject:v0.8:study";
+
+export function saveLocal() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(getState()));
+  window.dispatchEvent(new CustomEvent("deeproject:saved"));
+}
+
+export function loadLocal() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) hydrate(JSON.parse(raw));
+  } catch (error) {
+    console.warn("Could not restore local study state", error);
+  }
+}
+
+export function clearLocal() {
+  localStorage.removeItem(STORAGE_KEY);
+}
+
+export function downloadJson(filename, data) {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+}
+
+export function exportStudyBundle() {
+  const date = new Date().toISOString().slice(0, 10);
+  downloadJson(`deeproject-study-${date}.json`, studyBundle());
+}
+
+export function exportFramework() {
+  const { framework } = getState();
+  downloadJson(`deeproject-framework-${framework.id.slice(0, 8)}.json`, framework);
+}
+
+export function exportTrajectory() {
+  const state = getState();
+  const scenarioId = state.currentScenarioId;
+  downloadJson(`deeproject-trajectory-${scenarioId}.json`, {
+    scenarioId,
+    turnEvaluations: state.turnEvaluations?.[scenarioId] || {},
+    prediction: state.predictions?.[scenarioId] || null,
+    humanEvaluation: {
+      locked: state.humanEvaluationLocked,
+      snapshot: state.humanSnapshot
+    },
+    autoRhcaComparison: {
+      opened: state.autoComparisonOpened,
+      decision: state.autoComparisonDecision,
+      note: state.autoComparisonNote,
+      reviewedAt: state.autoComparisonReviewedAt
+    },
+    exportedAt: new Date().toISOString()
+  });
+}
+
+export async function remoteSave(resource, payload) {
+  if (APP_CONFIG.storageMode === "local") return { mode: "local", payload };
+  try {
+    const response = await fetch(`${APP_CONFIG.apiBaseUrl}/${resource}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: resource === "events"
+    });
+    if (!response.ok) throw new Error(`Save failed: ${response.status}`);
+    return response.json();
+  } catch (error) {
+    if (APP_CONFIG.storageMode === "remote") throw error;
+    return { mode: "local-fallback", payload, error: error.message };
+  }
+}
+
+export async function createStudySession() {
+  const state = getState();
+  return remoteSave("study-sessions", {
+    session_id: state.studySessionId,
+    participant_id: state.participantId,
+    started_at: state.startedAt,
+    status: "active",
+    metadata: { product_version: APP_CONFIG.version }
+  });
+}
+
+export async function saveParticipantProfile() {
+  const state = getState();
+  return remoteSave("participants", {
+    participant_id: state.participantId,
+    email: state.participantProfile.email,
+    identity_type: state.participantProfile.identityType,
+    role: state.participantProfile.role,
+    domain: state.participantProfile.domain
+  });
+}
+
+export async function syncFramework() {
+  const state = getState();
+  return remoteSave("frameworks", {
+    ...state.framework,
+    framework_id: state.framework.id,
+    session_id: state.studySessionId,
+    participant_id: state.participantId
+  });
+}
+
+export async function syncScenarioReview() {
+  const bundle = studyBundle();
+  return remoteSave("scenario-reviews", {
+    ...bundle.scenarioReview,
+    human_evaluation: bundle.humanEvaluation,
+    auto_rhca_evaluation: bundle.autoRhcaEvaluation,
+    auto_rhca_comparison: bundle.autoRhcaComparison,
+    trajectory_analytics: bundle.trajectoryAnalytics,
+    session_id: bundle.metadata.sessionId,
+    participant_id: bundle.metadata.participantId,
+    completed: bundle.taskCompletion.scenario
+  });
+}
+
+export async function syncEvent(event) {
+  return remoteSave("events", {
+    ...event,
+    event_id: event.eventId,
+    session_id: event.sessionId,
+    event_type: event.type,
+    scenario_id: event.scenarioId
+  });
+}
+
+export function mongoIntegrationContract() {
+  return {
+    note: "The browser calls an authenticated API; MongoDB credentials remain on the server.",
+    endpoints: [
+      "POST /api/v1/study-sessions",
+      "POST /api/v1/events",
+      "POST /api/v1/frameworks",
+      "POST /api/v1/scenario-reviews"
+    ],
+    collections: ["study_sessions", "events", "frameworks", "scenario_reviews"]
+  };
+}
+
