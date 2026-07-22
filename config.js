@@ -98,16 +98,141 @@ export const FRAMEWORK_TEMPLATES = {
 };
 
 const pythonTurns = [
-  { id: "U1", round: 1, role: "user", text: "I'm new to Python. How do I use a loop with a list?" },
-  { id: "A1", round: 1, role: "assistant", text: "In Python, lists are mutable ordered collections implementing the sequence protocol. You can iterate using enumerate(), list comprehensions, generators, or range-based indexing.\n\nitems = [\"apple\", \"banana\", \"orange\"]\nfor index, value in enumerate(items):\n    print(f\"{index}: {value}\")\n\nThe iterator protocol internally calls iter() and next() until StopIteration is raised." },
-  { id: "U2", round: 2, role: "user", text: "That is too complicated. Can you explain it more simply?" },
-  { id: "A2", round: 2, role: "assistant", text: "A loop repeats something.\n\nfor item in items:\n    print(item)" },
-  { id: "U3", round: 3, role: "user", text: "What are 'item' and 'items'? I don't know where they came from." },
-  { id: "A3", round: 3, role: "assistant", text: "'items' is the list, and 'item' is one value from the list.\n\nitems = [\"apple\", \"banana\", \"orange\"]\nfor item in items:\n    print(item)" },
-  { id: "U4", round: 4, role: "user", text: "Can you explain what happens each time the loop runs? Please keep it simple." },
-  { id: "A4", round: 4, role: "assistant", text: "Yes.\n\n1. Python takes the first value, 'apple', and calls it item.\n2. It prints 'apple'.\n3. Python takes the next value, 'banana', and calls it item.\n4. It continues until the list is finished.\n\nSo item means 'the current value.'" },
-  { id: "U5", round: 5, role: "user", text: "If I change the list to numbers, will the same loop still work?" },
-  { id: "A5", round: 5, role: "assistant", text: "Yes. The loop works the same way:\n\nnumbers = [2, 4, 6]\nfor number in numbers:\n    print(number)\n\nEach time the loop runs, number stores one value from the list: first 2, then 4, then 6." }
+  {
+    id: "U1",
+    round: 1,
+    role: "user",
+    text: "What is a list in Python?"
+  },
+  {
+    id: "A1",
+    round: 1,
+    role: "assistant",
+    text: `A list is an ordered collection of values. Lists are mutable, which means you can change their contents. You can access a value using its index, starting from 0.
+
+\`\`\`python
+fruits = ["apple", "banana", "orange"]
+print(fruits[0])
+\`\`\`
+
+Lists also support operations such as indexing, slicing, and iteration.`
+  },
+
+  {
+    id: "U2",
+    round: 2,
+    role: "user",
+    text: "I’m not familiar with some of those terms. Can you give me a simpler example using a list?"
+  },
+  {
+    id: "A2",
+    round: 2,
+    role: "assistant",
+    text: `A list lets you store several things together:
+
+\`\`\`python
+fruits = ["apple", "banana", "orange"]
+print(fruits)
+\`\`\`
+
+\`fruits\` is the name of the list. The list contains three fruit names.`
+  },
+
+  {
+    id: "U3",
+    round: 3,
+    role: "user",
+    text: "How can I use a loop to print each fruit in the list?"
+  },
+  {
+    id: "A3",
+    round: 3,
+    role: "assistant",
+    text: `You can use a \`for\` loop:
+
+\`\`\`python
+fruits = ["apple", "banana", "orange"]
+
+for fruit in fruits:
+    print(fruit)
+\`\`\`
+
+Each time the loop runs, \`fruit\` represents one item from the list. It first represents "apple", then "banana", and finally "orange".`
+  },
+
+  {
+    id: "U4",
+    round: 4,
+    role: "user",
+    text: `I changed the code to print only fruits with more than five letters, but it still prints every fruit. What did I do wrong?
+
+\`\`\`python
+fruits = ["apple", "banana", "orange"]
+
+for fruit in fruits:
+    print(fruit)
+
+if len(fruit) > 5:
+    print(fruit)
+\`\`\``
+  },
+  {
+    id: "A4",
+    round: 4,
+    role: "assistant",
+    text: `The \`if\` statement needs to be inside the loop:
+
+\`\`\`python
+fruits = ["apple", "banana", "orange"]
+
+for fruit in fruits:
+    if len(fruit) > 5:
+        print(fruit)
+\`\`\`
+
+Indent the \`if\` statement and remove the first \`print(fruit)\`.`
+  },
+
+  {
+    id: "U5",
+    round: 5,
+    role: "user",
+    text: "I don’t understand why the `if` statement has to be inside the loop. Can you explain what happens each time the loop runs?"
+  },
+  {
+    id: "A5",
+    round: 5,
+    role: "assistant",
+    text: `The loop looks at one fruit at a time:
+
+1. It checks "apple". It has five letters, so it is not printed.
+2. It checks "banana". It has six letters, so it is printed.
+3. It checks "orange". It has six letters, so it is printed.
+
+The \`if\` statement must be inside the loop so that Python checks every fruit. A fruit is printed only when it has more than five letters.`
+  },
+
+  {
+    id: "U6",
+    round: 6,
+    role: "user",
+    text: "Can you explain more simply how the list, loop, and `len()` function work together?"
+  },
+  {
+    id: "A6",
+    round: 6,
+    role: "assistant",
+    text: `The list stores the fruits, the loop goes through them one at a time, and \`len()\` returns the length of each fruit.
+
+You can also write this more concisely using a list comprehension:
+
+\`\`\`python
+long_fruits = [fruit for fruit in fruits if len(fruit) > 5]
+print(long_fruits)
+\`\`\`
+
+This creates a new list containing only the fruits with more than five letters.`
+  }
 ];
 
 const earsketchTurns = [
