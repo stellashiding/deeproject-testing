@@ -1695,3 +1695,20 @@ textarea:focus-visible {
   justify-content: center;
   text-decoration: none;
 }
+.enter-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 28px 20px 0;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #111318;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.enter-button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
