@@ -104,7 +104,10 @@ export function renderScenario(root) {
   const item = scenario();
   root.innerHTML = `<div class="page scenario-page">
     <header class="page-header"><div><span class="eyebrow">Task 1 - Guided scenario simulation</span><h1>Evaluate behavior across selected turns</h1><p>Review the full interaction, select the assistant responses that matter, and ground RHCA ratings in evidence.</p></div><select id="scenarioSelect" class="scenario-select" aria-label="Choose scenario">${SCENARIOS.map(s => `<option value="${s.id}" ${s.id === item.id ? "selected" : ""}>${esc(s.title)}</option>`).join("")}</select></header>
-    <div class="context-strip"><div><span>Case family</span><b>${esc(item.family)}</b></div><div><span>User</span><b>${esc(item.learner)}</b></div><div><span>Goal</span><b>${esc(item.goal)}</b></div><div><span>Mode</span><b>5 rounds - guided</b></div></div>
+    <div class="context-strip"><div><span>Case family</span><b>${esc(item.family)}</b></div><div><span>User</span><b>${esc(item.learner)}</b></div><div><span>Goal</span><b>${esc(item.goal)}</b></div><div>
+  <span>Mode</span>
+  <b>${Math.max(...item.turns.map(turn => turn.round))} rounds - guided</b>
+</div></div>
     <div class="scenario-layout">
       <aside class="context-panel"><span class="eyebrow">Active context</span><h2>Long-horizon constraints</h2>${item.constraints.map(c => `<div class="constraint">✓ ${esc(c)}</div>`).join("")}<h3>Trace capabilities</h3><div class="chip-row">${item.capabilities.map(c => `<span class="chip">${esc(c)}</span>`).join("")}</div>${item.retrieval ? `<h3>Retrieved curriculum</h3>${item.retrieval.map(r => `<div class="retrieval-item">${esc(r)}</div>`).join("")}` : ""}<div class="notice"><b>Evaluation target</b> is the assistant response being rated. <b>Evidence turns</b> can include user or assistant messages.</div></aside>
       <section class="conversation-panel"><div class="conversation-head"><div><span class="eyebrow">${esc(item.subtitle)}</span><h2>${esc(item.title)}</h2></div><div class="legend"><span class="dot target"></span>Target <span class="dot evidence"></span>Evidence</div></div>${item.turns.filter(t => t.round <= state.revealedRound).map(messageCard).join("")}</section>
