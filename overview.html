@@ -206,7 +206,7 @@
 
     .health-card{
       min-height:292px;
-      padding:29px;
+      padding:24px;
       display:flex;
       flex-direction:column;
       justify-content:space-between;
@@ -214,12 +214,24 @@
 
     .health-head{
       display:flex;
-      align-items:center;
+      align-items:flex-start;
       justify-content:space-between;
       gap:14px;
+      margin-bottom:16px;
     }
 
-    .health-title{color:var(--muted);font-size:13px}
+    .health-title{
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .health-note{
+      margin-top:5px;
+      color:var(--subtle);
+      font-size:11px;
+      line-height:1.45;
+    }
 
     .delta{
       padding:5px 8px;
@@ -228,32 +240,85 @@
       background:rgba(98,215,160,.08);
       color:var(--good);
       font-size:11px;
+      white-space:nowrap;
     }
 
-    .score{
-      display:flex;
-      align-items:flex-end;
-      gap:9px;
-      margin-top:18px;
-    }
-
-    .score strong{
-      font-size:70px;
-      line-height:.94;
-      letter-spacing:-.075em;
-    }
-
-    .score span{margin-bottom:9px;color:var(--muted)}
-
-    .health-bar{
+    .snapshot-grid{
       display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:8px;
-      margin-top:24px;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
     }
 
-    .health-segment{height:8px;border-radius:999px}
-    .health-caption{margin-top:20px;color:var(--muted);font-size:13px;line-height:1.58}
+    .snapshot-metric{
+      min-height:102px;
+      padding:14px;
+      border:1px solid rgba(255,255,255,.075);
+      border-radius:14px;
+      background:rgba(255,255,255,.018);
+    }
+
+    .snapshot-metric.primary{
+      border-color:rgba(239,127,142,.22);
+      background:linear-gradient(135deg,rgba(239,127,142,.105),rgba(255,255,255,.018));
+    }
+
+    .snapshot-label{
+      color:var(--muted);
+      font-size:10px;
+      font-weight:720;
+      letter-spacing:.075em;
+      text-transform:uppercase;
+    }
+
+    .snapshot-value{
+      margin-top:10px;
+      font-size:30px;
+      line-height:1;
+      font-weight:830;
+      letter-spacing:-.055em;
+    }
+
+    .snapshot-value.risk{color:#ffc0c8}
+
+    .snapshot-unit{
+      margin-left:4px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:600;
+      letter-spacing:0;
+    }
+
+    .snapshot-detail{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.42;
+    }
+
+    .snapshot-detail strong{
+      color:#eef2f8;
+      font-weight:720;
+    }
+
+    .snapshot-footer{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      margin-top:12px;
+      padding:11px 12px;
+      border:1px solid rgba(239,127,142,.13);
+      border-radius:12px;
+      background:rgba(239,127,142,.055);
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.45;
+    }
+
+    .snapshot-footer-icon{
+      color:#ffc0c8;
+      font-size:12px;
+      line-height:1.3;
+    }
 
     .panel{
       padding:23px;
@@ -717,23 +782,43 @@
       </article>
 
       <article class="health-card">
-        <div>
-          <div class="health-head">
-            <div class="health-title">Behavior health</div>
-            <div class="delta">↑ augmented system</div>
+        <div class="health-head">
+          <div>
+            <div class="health-title">Behavior Snapshot</div>
+            <div class="health-note">Aggregate quality and hidden risk should be read together.</div>
           </div>
-          <div class="score"><strong>2.63</strong><span>/ 3.0</span></div>
-          <div class="health-bar">
-            <div class="health-segment" style="background:var(--reasoning)"></div>
-            <div class="health-segment" style="background:var(--helpfulness)"></div>
-            <div class="health-segment" style="background:var(--consistency)"></div>
-            <div class="health-segment" style="background:var(--context)"></div>
+          <div class="delta">↑ augmented system</div>
+        </div>
+
+        <div class="snapshot-grid">
+          <div class="snapshot-metric primary">
+            <div class="snapshot-label">Hidden behavioral risks</div>
+            <div class="snapshot-value risk">9<span class="snapshot-unit">types</span></div>
+            <div class="snapshot-detail">Detected across evaluated interactions</div>
+          </div>
+
+          <div class="snapshot-metric">
+            <div class="snapshot-label">Highest-risk failure</div>
+            <div class="snapshot-value">23.5%</div>
+            <div class="snapshot-detail"><strong>Misleading suggestion</strong></div>
+          </div>
+
+          <div class="snapshot-metric">
+            <div class="snapshot-label">Overall RHCA</div>
+            <div class="snapshot-value">2.63<span class="snapshot-unit">/ 3.0</span></div>
+            <div class="snapshot-detail">Useful as context, not a safety verdict</div>
+          </div>
+
+          <div class="snapshot-metric">
+            <div class="snapshot-label">Largest judge gap</div>
+            <div class="snapshot-value">57.8<span class="snapshot-unit">pp</span></div>
+            <div class="snapshot-detail">Human reference vs GPT-4o</div>
           </div>
         </div>
 
-        <div class="health-caption">
-          Human evaluation favors the retrieval-augmented Gemini system,
-          while LLM judges reach a different conclusion.
+        <div class="snapshot-footer">
+          <span class="snapshot-footer-icon">⚠</span>
+          <span>A strong average score does not mean the interaction is behaviorally safe or consistently helpful.</span>
         </div>
       </article>
     </section>
